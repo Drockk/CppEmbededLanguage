@@ -1,0 +1,13 @@
+# Dirs
+.vs/*
+bin/*
+bin-int/*
+*obj/*
+
+#Files
+*.sln
+*.vcxproj*
+conan.lock
+conaninfo.txt
+conanbuildinfo*
+graph_info.json
