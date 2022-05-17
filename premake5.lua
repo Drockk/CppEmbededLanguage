@@ -20,4 +20,5 @@ workspace("CppEmbededLanguage")
 
 outputdir = "%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}"
 
-    include("lua")
+    include("luaSum")
+    include("luaFactorial")
