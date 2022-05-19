@@ -8,6 +8,8 @@ project "LuaSum"
     targetdir ("%{wks.location}/bin/" .. outputdir .. "/%{prj.name}")
     objdir ("%{wks.location}/bin-int/" .. outputdir .. "/%{prj.name}")
 
+    conan_basic_setup()
+
     linkoptions
     {
         conan_exelinkflags

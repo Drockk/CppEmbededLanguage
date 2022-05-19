@@ -2,10 +2,10 @@
 .vs/*
 bin/*
 bin-int/*
-*obj/*
+obj/**
 
 #Files
-*.sln
+*.sln*
 *.vcxproj*
 conan.lock
 conaninfo.txt

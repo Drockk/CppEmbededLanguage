@@ -2,10 +2,11 @@
 #include <string>
 #include <format>
 #include <stdexcept>
+#include <chrono>
 
 #include <lua.hpp>
 
-int main(int argc, char* argv[]) {
+int main(const int argc, char* argv[]) {
     int32_t n{};
 
     if (argc == 1) {
@@ -40,6 +41,7 @@ int main(int argc, char* argv[]) {
     lua_getglobal(L, "myFactorial");
     lua_pushinteger(L, n);
 
+    const auto start = std::chrono::high_resolution_clock::now();
     if (lua_pcall(L, 1, 1, 0) == LUA_OK) {
         if (lua_isinteger(L, -1)) {
             const int result = lua_tointeger(L, -1);
@@ -53,6 +55,10 @@ int main(int argc, char* argv[]) {
         puts(lua_tostring(L, lua_gettop(L)));
         lua_pop(L, lua_gettop(L));
     }
+
+    const auto stop = std::chrono::high_resolution_clock::now();
+
+    std::cout << std::format("Runtime meassure: {}\n", duration_cast<std::chrono::microseconds>(stop - start));
 
     lua_close(L);
 

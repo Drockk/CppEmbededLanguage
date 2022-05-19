@@ -1,5 +1,5 @@
 -- premake5.lua
-project "luaFactorial"
+project "cSharpSum"
     kind "ConsoleApp"
     language "C++"
     cppdialect "C++20"
@@ -8,21 +8,25 @@ project "luaFactorial"
     targetdir ("%{wks.location}/bin/" .. outputdir .. "/%{prj.name}")
     objdir ("%{wks.location}/bin-int/" .. outputdir .. "/%{prj.name}")
 
-    conan_basic_setup()
-
-    linkoptions
-    {
-        conan_exelinkflags
-    }
-
     files
     {
         "src/**.hpp",
+        "src/**.h",
         "src/**.cpp"
+    }
+
+    links
+    {
+        "nethost.lib"
     }
 
     filter "system:windows"
         systemversion "latest"
+        defines { "WINDOWS" }
+
+    filter "system:linux"
+        systemversion "latest"
+        defines { "LINUX" }
 
     filter "configurations:Debug"
         defines { "DEBUG" }
