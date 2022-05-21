@@ -62,7 +62,7 @@ int main(const int argc, char* argv[]) {
 
     const auto stop = std::chrono::high_resolution_clock::now();
 
-    std::cout << fmt::format("Runtime meassure: {}ms\n", duration_cast<std::chrono::microseconds>(stop - start).count());
+    std::cout << fmt::format("Runtime meassure: {}s\n", duration_cast<std::chrono::seconds>(stop - start).count());
 
     lua_close(L);
 
