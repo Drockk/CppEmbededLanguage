@@ -1,5 +1,6 @@
 # Dirs
 .vs/*
+.idea/*
 bin/*
 bin-int/*
 obj/**
