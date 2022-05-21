@@ -159,7 +159,7 @@ int main(int argc, char* argv[])
     fr(&factorialArgs, sizeof factorialArgs);
     const auto stop = std::chrono::high_resolution_clock::now();
 
-    std::cout << fmt::format("Runtime: {}ms\n", duration_cast<std::chrono::microseconds>(stop - start).count());
+    std::cout << fmt::format("Runtime: {}s\n", duration_cast<std::chrono::seconds>(stop - start).count());
 
     return EXIT_SUCCESS;
 }
