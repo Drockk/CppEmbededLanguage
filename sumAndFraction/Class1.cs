@@ -1,54 +1,97 @@
-﻿using System;
-using System.Runtime.InteropServices;
+﻿using System.Runtime.InteropServices;
 
-namespace SumAndFraction
+namespace sumAndFraction;
+
+internal static class BinaryTrees
 {
-    public static class Lib
+    [StructLayout(LayoutKind.Sequential)]
+    public struct SumArgs
     {
-        [StructLayout(LayoutKind.Sequential)]
-        public struct SumArgs
+        public readonly int a;
+        public readonly int b;
+    }
+
+    public static int Sum(IntPtr arg, int argLength)
+    {
+        if (argLength < Marshal.SizeOf(typeof(SumArgs)))
         {
-            public int a;
-            public int b;
+            return 0;
         }
 
-        public static int Sum(IntPtr arg, int argLength)
+        var libArgs = Marshal.PtrToStructure<SumArgs>(arg);
+
+        return libArgs.a + libArgs.b;
+    }
+
+    private class TreeNode
+    {
+        private readonly TreeNode? _left;
+        private readonly TreeNode? _right;
+
+        private TreeNode(TreeNode? left = null, TreeNode? right = null)
         {
-            if (argLength < System.Runtime.InteropServices.Marshal.SizeOf(typeof(SumArgs)))
+            this._left = left;
+            this._right = right;
+        }
+
+        internal static TreeNode Create(int d)
+        {
+            return d == 0 ? new TreeNode()
+                : new TreeNode(Create(d - 1), Create(d - 1));
+        }
+
+        internal int Check()
+        {
+            var c = 1;
+            if (_right != null) c += _right.Check();
+            if (_left != null) c += _left.Check();
+            return c;
+        }
+    }
+
+    private const int MinDepth = 4;
+    
+    [StructLayout(LayoutKind.Sequential)]
+    public struct FactorialArgs
+    {
+        public readonly int n;
+    }
+
+    public static int BinaryTreePub(IntPtr arg, int argLength)
+    {
+        if (argLength < Marshal.SizeOf(typeof(FactorialArgs)))
+        {
+            return 0;
+        }
+
+        var libArgs = Marshal.PtrToStructure<FactorialArgs>(arg);
+
+        BinaryTreePriv(libArgs.n);
+        
+        return 0;
+    }
+
+    private static void BinaryTreePriv(int nN)
+    {
+        var stretchDepth = nN + 1;
+        Console.WriteLine($"stretch tree of depth {stretchDepth}\t check: {TreeNode.Create(stretchDepth).Check()}");
+
+        var longLivedTree = TreeNode.Create(nN);
+        var nResults = (nN - MinDepth) / 2 + 1;
+        for (var i = 0; i < nResults; i++)
+        {
+            var depth = i * 2 + MinDepth;
+            var n = (1 << nN - depth + MinDepth);
+
+            var check = 0;
+            for (var j = 0; j < n; j++)
             {
-                return 0;
+                check += TreeNode.Create(depth).Check();
             }
 
-            SumArgs libArgs = Marshal.PtrToStructure<SumArgs>(arg);
-
-            return libArgs.a + libArgs.b;
+            Console.WriteLine($"{n}\t trees of depth {depth}\t check: {check}");
         }
 
-        public struct FactorialArgs
-        {
-            public int n;
-        }
-
-        public static int FactorialPub(IntPtr arg, int argLength)
-        {
-            if (argLength < System.Runtime.InteropServices.Marshal.SizeOf(typeof(FactorialArgs)))
-            {
-                return 0;
-            }
-
-            FactorialArgs libArgs = Marshal.PtrToStructure<FactorialArgs>(arg);
-
-            return Factorial(libArgs.n);
-        }
-
-        private static int Factorial(int n)
-        {
-            if (n < 0)
-                Console.Write("Wrong argument");
-            if (n > 1)
-                return Factorial(n - 1) * n;
-            else
-                return 1;
-        }
+        Console.WriteLine($"long lived tree of depth {nN}\t check: {longLivedTree.Check()}");
     }
 }

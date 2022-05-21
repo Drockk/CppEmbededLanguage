@@ -1,4 +1,5 @@
 [requires]
+fmt/8.1.1
 lua/5.4.4
 [generators]
 premake

@@ -1,19 +1,16 @@
-#include <cstdio>
-#include <cstdlib>
-#include <cstring>
 #include <cassert>
 #include <iostream>
-
-#include <climits>
+#include <string>
+#include <chrono>
 
 #include "nethost.h"
 
 // Header files copied from https://github.com/dotnet/core-setup
-#include <chrono>
 #include "coreclr_delegates.h"
-#include <format>
 #include "hostfxr.h"
-#include <string>
+
+#include <fmt/core.h>
+
 
 #ifdef WINDOWS
 #include <Windows.h>
@@ -44,7 +41,7 @@ namespace
     load_assembly_and_get_function_pointer_fn getDotnetLoadAssembly(const char_t* configPath);
 }
 
-int main([[maybe_unused]] int argc, char* argv[])
+int main(int argc, char* argv[])
 {
     char_t hostPath[MAX_PATH];
 #if WINDOWS
@@ -55,17 +52,20 @@ int main([[maybe_unused]] int argc, char* argv[])
     assert(resolved != nullptr);
 #endif
 
-    [[maybe_unused]]  auto n{ 0 }, a{0}, b{0};
+    [[maybe_unused]] auto n{ 0 };
+    [[maybe_unused]] auto a{ 0 };
+    [[maybe_unused]] auto b{ 0 };
     if (argc == 1) {
         std::cerr << "No arguments were passed." << std::endl;
+        return 1;
     }
-    else if (argc == 2) {
+    if (argc == 2) { 
         try {
             n = std::stoi(argv[1]);
         } catch ([[maybe_unused]] std::invalid_argument const& ex) {
-            std::cerr << std::format("Invalid number: {}\n", argv[1]);
+            std::cerr << fmt::format("Invalid number: {}\n", argv[1]);
         } catch ([[maybe_unused]] std::out_of_range const& ex) {
-            std::cerr << std::format("Number out of range: {}\n", argv[1]);
+            std::cerr << fmt::format("Number out of range: {}\n", argv[1]);
         }
     }
     else if (argc == 3) {
@@ -74,10 +74,10 @@ int main([[maybe_unused]] int argc, char* argv[])
             b = std::stoi(argv[2]);
         }
         catch ([[maybe_unused]] std::invalid_argument const& ex) {
-            std::cerr << std::format("Invalid number: {} or {}.\n", argv[1], argv[2]);
+            std::cerr << fmt::format("Invalid number: {} or {}.\n", argv[1], argv[2]);
         }
         catch ([[maybe_unused]] std::out_of_range const& ex) {
-            std::cerr << std::format("Number out of range: {} or {}.\n", argv[1], argv[2]);
+            std::cerr << fmt::format("Number out of range: {} or {}.\n", argv[1], argv[2]);
         }
     }
 
@@ -98,7 +98,7 @@ int main([[maybe_unused]] int argc, char* argv[])
     //
     // STEP 2: Initialize and start the .NET Core runtime
     //
-    const string_t configPath = rootPath + STR("ClassLibrary1.runtimeconfig.json");
+    const string_t configPath = rootPath + STR("sumAndFraction.runtimeconfig.json");
     load_assembly_and_get_function_pointer_fn loadAssemblyAndGetFunctionPointer = getDotnetLoadAssembly(
         configPath.c_str());
     assert(loadAssemblyAndGetFunctionPointer != nullptr && "Failure: get_dotnet_load_assembly()");
@@ -106,8 +106,8 @@ int main([[maybe_unused]] int argc, char* argv[])
     //
     // STEP 3: Load managed assembly and get function pointer to a managed method
     //
-    const string_t dotnetlibPath = rootPath + STR("ClassLibrary1.dll");
-    const auto dotnetType = STR("SumAndFraction.Lib, ClassLibrary1");
+    const string_t dotnetlibPath = rootPath + STR("sumAndFraction.dll");
+    const auto dotnetType = STR("sumAndFraction.BinaryTrees, sumAndFraction");
     //const auto dotnetTypeMethod = STR("Sum");
 
     //component_entry_point_fn sum = nullptr;
@@ -137,7 +137,7 @@ int main([[maybe_unused]] int argc, char* argv[])
     //const auto test = sum(&args, sizeof(args));
     //std::cout << test << std::endl;
 
-    const auto dotnetTypeMethod = STR("FactorialPub");
+    const auto dotnetTypeMethod = STR("BinaryTreePub");
     component_entry_point_fn fr = nullptr;
     [[maybe_unused]] const auto rc = loadAssemblyAndGetFunctionPointer(
         dotnetlibPath.c_str(),
@@ -152,17 +152,14 @@ int main([[maybe_unused]] int argc, char* argv[])
     {
         int n;
     };
-    FactorialArgs factorialArgs
-    {
-        n
-    };
+    FactorialArgs factorialArgs;
+    factorialArgs.n = n;
 
     const auto start = std::chrono::high_resolution_clock::now();
-    const auto test2 = fr(&factorialArgs, sizeof factorialArgs);
-    std::cout << test2 << std::endl;
+    fr(&factorialArgs, sizeof factorialArgs);
     const auto stop = std::chrono::high_resolution_clock::now();
 
-    std::cout << std::format("Runtime meassure: {}\n", duration_cast<std::chrono::microseconds>(stop - start));
+    std::cout << fmt::format("Runtime: {}ms\n", duration_cast<std::chrono::microseconds>(stop - start).count());
 
     return EXIT_SUCCESS;
 }
@@ -186,7 +183,7 @@ namespace
     }
     void* getExport(void* h, const char* name)
     {
-        void* f = ::GetProcAddress(static_cast<HMODULE>(h), name);
+        void* f = GetProcAddress(static_cast<HMODULE>(h), name);
         assert(f != nullptr);
         return f;
     }
