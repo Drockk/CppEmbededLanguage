@@ -20,10 +20,11 @@ constexpr auto DIR_SEPARATOR = L'\\';
 
 #else
 #include <dlfcn.h>
+#include <limits.h>
 
 #define STR(s) s
 constexpr auto DIR_SEPARATOR = '/';
-//#define MAX_PATH PATH_MAX
+#define MAX_PATH PATH_MAX
 
 #endif
 
