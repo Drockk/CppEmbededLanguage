@@ -211,9 +211,9 @@ namespace
             return false;
 
         void* lib = loadLibrary(buffer);
-        initFptr = static_cast<hostfxr_initialize_for_runtime_config_fn>(getExport(lib, "hostfxr_initialize_for_runtime_config"));
-        getDelegateFptr = static_cast<hostfxr_get_runtime_delegate_fn>(getExport(lib, "hostfxr_get_runtime_delegate"));
-        closeFptr = static_cast<hostfxr_close_fn>(getExport(lib, "hostfxr_close"));
+        initFptr = (hostfxr_initialize_for_runtime_config_fn)getExport(lib, "hostfxr_initialize_for_runtime_config");
+        getDelegateFptr = (hostfxr_get_runtime_delegate_fn)getExport(lib, "hostfxr_get_runtime_delegate");
+        closeFptr = (hostfxr_close_fn)getExport(lib, "hostfxr_close");
 
         return (initFptr && getDelegateFptr && closeFptr);
     }
@@ -235,6 +235,6 @@ namespace
             std::cerr << "Get delegate failed: " << std::hex << std::showbase << rc << std::endl;
 
         closeFptr(cxt);
-        return static_cast<load_assembly_and_get_function_pointer_fn>(loadAssemblyAndGetFunctionPointer);
+        return (load_assembly_and_get_function_pointer_fn)loadAssemblyAndGetFunctionPointer;
     }
 }

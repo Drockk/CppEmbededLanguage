@@ -22,18 +22,21 @@ project "cSharpSum"
         "src/**.cpp"
     }
 
-    links
-    {
-        "nethost.lib"
-    }
-
     filter "system:windows"
         systemversion "latest"
         defines { "WINDOWS" }
 
+        links
+        {
+            "nethost.lib"
+        }
+
     filter "system:linux"
         systemversion "latest"
         defines { "LINUX" }
+
+        libdirs { "/usr/share/dotnet/packs/Microsoft.NETCore.App.Host.linux-x64/6.0.5/runtimes/linux-x64/native/" }
+        links {"nethost"}
 
     filter "configurations:Debug"
         defines { "DEBUG" }
