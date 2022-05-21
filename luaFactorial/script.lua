@@ -1,21 +1,4 @@
 -- script.lua
-
--- function myFactorial(n)
---     if n < 0 then
---         error("Wrong argument")
---     end
---     if n > 1 then
---         return myFactorial(n -1) * n
---     else
---         return 1
---     end
--- end
-
-
--- The Computer Language Benchmarks Game
--- https://salsa.debian.org/benchmarksgame-team/benchmarksgame/
--- contributed by Mike Pall
--- *reset*
 local function BottomUpTree(depth)
     if depth > 0 then
         depth = depth - 1
